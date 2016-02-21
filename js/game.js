@@ -206,9 +206,7 @@ var update = function (modifier) {
 		&& monster.y <= (hero.y + 32)
 	) {
 		alert("has perdido");
-		princessesCaught = 0;
-		n_stone = 0;
-		reset()
+		location.reload()
 	}
 	// Are they touching?
 	if (
