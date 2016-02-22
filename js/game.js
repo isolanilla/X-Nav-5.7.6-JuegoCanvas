@@ -160,6 +160,7 @@ var update = function (modifier) {
 		heroAux.x = hero.x
 		if(y>30 && NotTouchStone(heroAux)){
 			hero.y -= hero.speed * modifier;
+			monster.y -= hero.speed/2 * modifier;
 		}else {
 			hero.y = hero.y;
 		}
@@ -171,6 +172,7 @@ var update = function (modifier) {
 		heroAux.x = hero.x
 		if(y<415 && NotTouchStone(heroAux) ){
 			hero.y += hero.speed * modifier;
+			monster.y += hero.speed/2 * modifier;
 		}else {
 			hero.y = hero.y;
 		}
@@ -182,6 +184,7 @@ var update = function (modifier) {
 		heroAux.y = hero.y
 		if(x>32 && NotTouchStone(heroAux) ){
 			hero.x -= hero.speed * modifier;
+			monster.x -= hero.speed/2 * modifier;
 		}else {
 			hero.x = hero.x;
 		}
@@ -193,6 +196,7 @@ var update = function (modifier) {
 		heroAux.y = hero.y
 		if(x < 455 && NotTouchStone(heroAux) ){
 			hero.x += hero.speed * modifier;
+			monster.x += hero.speed/2 * modifier;
 		}else {
 			hero.x = hero.x;
 		}
