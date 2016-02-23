@@ -51,17 +51,32 @@ princessImage.onload = function () {
 princessImage.src = "images/princess.png";
 
 // Game objects
-var hero = {
-	speed: 255, // movement in pixels per second
-	lives: 3
-};
+
 var princess = {};
 var arr_monster = {}
 var arr_stone = []
 var n_monster = 0;
 var n_stone = 0;
 var monsterspeed = 40;
-var princessesCaught = 0;
+var princessesCaught
+n_stone = localStorage.getItem('n_stone');
+arr_stone = localStorage.getItem('arr_stone');
+n_monster = localStorage.getItem('n_monster');
+arr_monster = localStorage.getItem('arr_monster');
+var herolives = localStorage.getItem('herolives')
+if (herolives==undefined){
+	herolives=3;
+}
+var hero = {
+	speed: 255, // movement in pixels per second
+	lives: herolives
+};
+
+princessesCaught = localStorage.getItem('princessesCaught');
+if (princessesCaught == undefined){
+	princessesCaught= 0
+}
+
 
 // Handle keyboard controls
 var keysDown = {};
@@ -234,9 +249,17 @@ var update = function (modifier) {
 		) {
 			if(hero.lives == 0){
 				alert("has perdido");
+				localStorage.setItem('princessesCaught',0);
+				localStorage.setItem('herolives',0);
+				localStorage.setItem('n_stone',0);
+				localStorage.setItem('arr_stone',[]);
+				localStorage.setItem('n_monster',0);
+				localStorage.setItem('arr_monster',[]);
+				localStorage.setItem('herolives',3);
 				location.reload()
 			}else{
 				--hero.lives;
+				localStorage.setItem('herolives',hero.lives);
 				reset()
 			}
 
@@ -251,6 +274,13 @@ var update = function (modifier) {
 		&& princess.y <= (hero.y + 32)
 	) {
 		++princessesCaught;
+		localStorage.setItem('princessesCaught',princessesCaught);
+		localStorage.setItem('n_stone',n_stone);
+		localStorage.setItem('arr_stone',arr_stone);
+		localStorage.setItem('n_monster',n_monster);
+		localStorage.setItem('arr_monster',arr_monster);
+		localStorage.setItem('herolives',hero.lives);
+		localStorage.setItem('princessesCaught',princessesCaught);
 {
 			if (princessesCaught <= 5){
 				n_stone = 3;
@@ -327,7 +357,6 @@ var render = function () {
 var main = function () {
 	var now = Date.now();
 	var delta = now - then;
-
 	update(delta / 1000);
 	moveMonster(delta/1000)
 	render();
