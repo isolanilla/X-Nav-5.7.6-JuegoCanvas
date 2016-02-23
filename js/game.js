@@ -55,9 +55,11 @@ var hero = {
 	speed: 255 // movement in pixels per second
 };
 var princess = {};
-var monster = {};
+var arr_monster = {}
 var arr_stone = []
+var n_monster = 0;
 var n_stone = 0;
+var monsterspeed = 50;
 var princessesCaught = 0;
 
 // Handle keyboard controls
@@ -76,16 +78,52 @@ var reset = function () {
 	hero.x = canvas.width / 2;
 	hero.y = canvas.height / 2;
 	arr_stone = []
+	arr_monster = []
+	var princessOk = true
+	var heroOk = true
 
 	// Throw the princess somewhere on the screen randomly
 	princess.x = Math.random()*(455-32)+32
 	princess.y = Math.random()*(415-30)+30
 
-	monster.x = Math.random()*(455-32)+32
-	monster.y = Math.random()*(415-30)+30
-	var princessOk = true
-	var heroOk = true
-	var stoneOk = true
+
+	for (var i = 0; i < n_monster; i++) {
+	  var monster = {}
+	  for(;;){
+	    monster.x = Math.random()*(455-32)+32
+	    monster.y = Math.random()*(415-30)+30
+
+	    if(
+	      monster.x <= (hero.x + 25)
+	      && hero.x <= (monster.x + 25)
+	      && monster.y <= (hero.y + 32)
+	      && hero.y <= (monster.y + 32)
+	    ){
+	      heroOk=false
+	    }else{
+	      heroOk=true
+	    }
+
+	    if(
+	      monster.x <= (princess.x + 25)
+	      && princess.x <= (monster.x + 25)
+	      && monster.y <= (princess.y + 32)
+	      && princess.y <= (monster.y + 32)
+	    ){
+	      princessOk=false
+	    }else{
+	      princessOk=true
+	    }
+
+	    if(princessOk  && heroOk){
+	      break;
+	    }
+
+	  }
+	  arr_monster.push(monster)
+	}
+
+
 	for (var i = 0; i < n_stone; i++) {
 		var stone = {}
 		for(;;){
@@ -114,19 +152,7 @@ var reset = function () {
 				princessOk=true
 			}
 
-			for (var j = 0; j < arr_stone.length; j++) {
-			  if (
-					stone.x <= (arr_stone[j].x + 25)
-					&& arr_stone[j].x <= (stone.x + 25)
-					&& stone.y <= (arr_stone[j].y + 32)
-					&& arr_stone[j].y <= (stone.y + 32)
-			  ) {
-			    stoneOk = false
-			  }else{
-			  	stoneOk = true
-			  }
-			}
-			if(princessOk && stoneOk && heroOk){
+			if(princessOk  && heroOk){
 				break;
 			}
 
@@ -160,7 +186,6 @@ var update = function (modifier) {
 		heroAux.x = hero.x
 		if(y>30 && NotTouchStone(heroAux)){
 			hero.y -= hero.speed * modifier;
-			monster.y -= hero.speed/2 * modifier;
 		}else {
 			hero.y = hero.y;
 		}
@@ -172,7 +197,6 @@ var update = function (modifier) {
 		heroAux.x = hero.x
 		if(y<415 && NotTouchStone(heroAux) ){
 			hero.y += hero.speed * modifier;
-			monster.y += hero.speed/2 * modifier;
 		}else {
 			hero.y = hero.y;
 		}
@@ -184,7 +208,6 @@ var update = function (modifier) {
 		heroAux.y = hero.y
 		if(x>32 && NotTouchStone(heroAux) ){
 			hero.x -= hero.speed * modifier;
-			monster.x -= hero.speed/2 * modifier;
 		}else {
 			hero.x = hero.x;
 		}
@@ -196,22 +219,23 @@ var update = function (modifier) {
 		heroAux.y = hero.y
 		if(x < 455 && NotTouchStone(heroAux) ){
 			hero.x += hero.speed * modifier;
-			monster.x += hero.speed/2 * modifier;
 		}else {
 			hero.x = hero.x;
 		}
 	}
 
-
-	if (
-		hero.x <= (monster.x + 25)
-		&& monster.x <= (hero.x + 25)
-		&& hero.y <= (monster.y + 32)
-		&& monster.y <= (hero.y + 32)
-	) {
-		alert("has perdido");
-		location.reload()
+	for (var i = 0; i < arr_monster.length; i++) {
+		if (
+			hero.x <= (arr_monster[i].x + 25)
+			&& arr_monster[i].x <= (hero.x + 25)
+			&& hero.y <= (arr_monster[i].y + 32)
+			&& arr_monster[i].y <= (hero.y + 32)
+		) {
+			alert("has perdido");
+			location.reload()
+		}
 	}
+
 	// Are they touching?
 	if (
 		hero.x <= (princess.x + 25)
@@ -223,19 +247,39 @@ var update = function (modifier) {
 {
 			if (princessesCaught <= 5){
 				n_stone = 3;
+				n_monster = 1;
 			}else if (princessesCaught > 5 && princessesCaught <= 10) {
 				n_stone = 6;
+				n_monster = 2;
 			}else if (princessesCaught > 10 && princessesCaught <= 15){
 				n_stone = 9;
+				n_monster = 3;
 			}else if(princessesCaught > 15 && princessesCaught <= 20){
 				n_stone = 12;
+				n_monster = 4;
 			}else{
 				n_stone = 15;
+				n_monster =5;
 			}
 		}
 		reset();
 	}
 };
+
+var moveMonster = function(modifier){
+	for (var i = 0; i < arr_monster.length; i++){
+		if (hero.x - arr_monster[i].x > 0){
+			arr_monster[i].x += monsterspeed * modifier;
+		}else{
+			arr_monster[i].x -= monsterspeed * modifier;
+		}
+		if (hero.y - arr_monster[i].y > 0){
+			arr_monster[i].y += monsterspeed * modifier;
+		}else{
+			arr_monster[i].y -= monsterspeed * modifier;
+		}
+	}
+}
 
 // Draw everything
 var render = function () {
@@ -247,7 +291,9 @@ var render = function () {
 		ctx.drawImage(heroImage, hero.x, hero.y);
 	}
 	if (monsterReady) {
-		ctx.drawImage(monsterImage, monster.x, monster.y);
+		for (var j = 0; j < arr_monster.length; j++) {
+			ctx.drawImage(monsterImage, arr_monster[j].x, arr_monster[j].y);
+		}
 	}
 
 
@@ -276,6 +322,7 @@ var main = function () {
 	var delta = now - then;
 
 	update(delta / 1000);
+	moveMonster(delta/1000)
 	render();
 
 	then = now;
