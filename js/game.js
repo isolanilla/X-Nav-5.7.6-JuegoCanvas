@@ -52,14 +52,15 @@ princessImage.src = "images/princess.png";
 
 // Game objects
 var hero = {
-	speed: 255 // movement in pixels per second
+	speed: 255, // movement in pixels per second
+	lives: 3
 };
 var princess = {};
 var arr_monster = {}
 var arr_stone = []
 var n_monster = 0;
 var n_stone = 0;
-var monsterspeed = 50;
+var monsterspeed = 40;
 var princessesCaught = 0;
 
 // Handle keyboard controls
@@ -231,8 +232,14 @@ var update = function (modifier) {
 			&& hero.y <= (arr_monster[i].y + 32)
 			&& arr_monster[i].y <= (hero.y + 32)
 		) {
-			alert("has perdido");
-			location.reload()
+			if(hero.lives == 0){
+				alert("has perdido");
+				location.reload()
+			}else{
+				--hero.lives;
+				reset()
+			}
+
 		}
 	}
 
@@ -313,7 +320,7 @@ var render = function () {
 	ctx.font = "24px Helvetica";
 	ctx.textAlign = "left";
 	ctx.textBaseline = "top";
-	ctx.fillText("Princesses caught: " + princessesCaught, 32, 32);
+	ctx.fillText("Princesses caught: " + princessesCaught + " lives: " + hero.lives, 32, 32);
 };
 
 // The main game loop
